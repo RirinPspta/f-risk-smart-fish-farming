@@ -128,7 +128,7 @@ class WaterQuality extends Model
                 }
             }
 
-            // Simpan status dengan format lengkap (beserta emoji dan persentase) ke kolom status_air
+            // Simpan status dengan format lengkap ke kolom status_air
             if ($status === 'Aman') {
                 $model->status_air = "✅ AMAN {$percent}%";
             } else {
@@ -171,24 +171,24 @@ class WaterQuality extends Model
                 } else {
                     $rekomendasi .= "Kondisi air masih aman untuk ikan Nila, namun beberapa parameter perlu mulai diperhatikan:\n";
                     if (in_array('NITRATE(PPM)', $bermasalah)) {
-                        $rekomendasi .= "\nNitrat mulai meningkat. Kurangi jumlah pakan atau bersihkan filter kolam.";
+                        $rekomendasi .= "- Nitrat mulai meningkat. Kurangi jumlah pakan atau bersihkan filter kolam.\n";
                     }
                     if (in_array('PH', $bermasalah)) {
-                        $rekomendasi .= ($ph < 6.5) ? "\npH air lebih rendah dari normal. Tambahkan kapur Dolomit secara bertahap." : "\npH air lebih tinggi dari normal. Tambahkan probiotik atau molase.";
+                        $rekomendasi .= ($ph < 6.5) ? "- pH air lebih rendah dari normal. Tambahkan kapur Dolomit secara bertahap.\n" : "- pH air lebih tinggi dari normal. Tambahkan probiotik atau molase.\n";
                     }
                     if (in_array('AMMONIA(mg/l)', $bermasalah)) {
-                        $rekomendasi .= "\nAmonia mulai terdeteksi. Kurangi jumlah pakan untuk sementara waktu.";
+                        $rekomendasi .= "- Amonia mulai terdeteksi. Kurangi jumlah pakan untuk sementara waktu.\n";
                     }
                     if (in_array('TEMP', $bermasalah)) {
-                        $rekomendasi .= ($suh < 25.0) ? "\nSuhu air sedikit rendah. Periksa kondisi cuaca di sekitar kolam." : "\nSuhu air sedikit tinggi. Pastikan sirkulasi udara di sekitar kolam berjalan baik.";
+                        $rekomendasi .= ($suh < 25.0) ? "- Suhu air sedikit rendah. Periksa kondisi cuaca di sekitar kolam.\n" : "- Suhu air sedikit tinggi. Pastikan sirkulasi udara di sekitar kolam berjalan baik.\n";
                     }
                     if (in_array('DO', $bermasalah)) {
-                        $rekomendasi .= "\nKadar oksigen mulai menurun. Pastikan aerator atau kincir air berfungsi dengan baik.";
+                        $rekomendasi .= "- Kadar oksigen mulai menurun. Pastikan aerator atau kincir air berfungsi dengan baik.\n";
                     }
                     if (in_array('TURBIDITY', $bermasalah)) {
-                        $rekomendasi .= ($kek < 30.0) ? "\nAir terlalu jernih. Pantau kondisi plankton, belum perlu tindakan segera." : "\nAir terlihat agak keruh. Periksa apakah ada endapan lumpur atau sisa pakan yang menumpuk.";
+                        $rekomendasi .= ($kek < 30.0) ? "- Air terlalu jernih. Pantau kondisi plankton, belum perlu tindakan segera.\n" : "- Air terlihat agak keruh. Periksa apakah ada endapan lumpur atau sisa pakan yang menumpuk.\n";
                     }
-                    $rekomendasi .= "\n\nPantau kondisi air setiap hari.";
+                    $rekomendasi .= "\nPantau kondisi air setiap hari.";
                 }
             } else {
                 $rekomendasi = "⚠️ STATUS AIR: BERISIKO {$percent}%\n\nKondisi air saat ini kurang baik dan berpotensi membahayakan ikan Nila.\n\nParameter Dominan:\n";

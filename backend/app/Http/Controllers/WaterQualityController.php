@@ -13,10 +13,23 @@ class WaterQualityController extends Controller
      */
     public function index(Request $request)
     {
-        // Panggil data beserta nama user yang menginput
-        $query = \App\Models\WaterQuality::with('user');
+        $user = $request->user(); // Ambil data user yang sedang login
 
-        // 1. FILTER STATUS AIR (Gunakan LIKE untuk mendeteksi kata di dalam teks panjang)
+        // Panggil data beserta nama user yang menginput
+        $query = WaterQuality::with('user');
+
+        if ($user->role !== 'admin') {
+            $query->where('user_id', $user->id);
+        }
+
+        // 1. FILTER PENGINPUT (Ini yang membuat pencarian nama berfungsi)
+        if ($request->filled('penginput')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('name', 'LIKE', '%' . $request->penginput . '%');
+            });
+        }
+
+        // 2. FILTER STATUS AIR (Gunakan LIKE untuk mendeteksi kata di dalam teks panjang)
         if ($request->filled('status_air')) {
             $status = $request->status_air;
             
@@ -31,18 +44,15 @@ class WaterQualityController extends Controller
             });
         }
 
-        // 2. FILTER TANGGAL MULAI
+        // 3. FILTER TANGGAL MULAI
         if ($request->filled('start_date')) {
-            $query->whereDate('tanggal_pengukuran', '>=', $request->start_date);
+            $query->whereDate('tanggal_pengukuran', '=', $request->start_date);
         }
 
-        // 3. FILTER TANGGAL SELESAI
-        if ($request->filled('end_date')) {
-            $query->whereDate('tanggal_pengukuran', '<=', $request->end_date);
-        }
-
-        // Urutkan dari tanggal terbaru ke terlama
-        $data = $query->orderBy('tanggal_pengukuran', 'desc')->get();
+        // 4. PENGURUTAN DATA (Diperbarui agar data terbaru di hari yang sama naik ke atas)
+        $data = $query->orderBy('tanggal_pengukuran', 'desc')
+                      ->orderBy('id', 'desc')
+                      ->get();
 
         return response()->json($data);
     }

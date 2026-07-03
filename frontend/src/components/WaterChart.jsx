@@ -143,6 +143,7 @@ const WaterChart = ({ data = [] }) => {
     },
     scales: {
       y: {
+        beginAtZero: true, // <--- SOLUSI AGAR GRAFIK SELALU MULAI DARI 0
         grid: {
           color: 'rgba(51, 65, 85, 0.2)',
         },
@@ -168,8 +169,9 @@ const WaterChart = ({ data = [] }) => {
   };
 
   return (
-    <div className="glass rounded-2xl p-6 border border-slate-800/80 shadow-lg">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    // <--- DITAMBAHKAN flex flex-col h-full agar kotaknya sejajar dengan yang kiri
+    <div className="glass rounded-2xl p-6 border border-slate-800/80 shadow-lg flex flex-col h-full">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 shrink-0">
         <div>
           <h3 className="text-lg font-semibold text-slate-100">Grafik Monitoring Kualitas Air</h3>
           <p className="text-xs text-slate-400">Tren parameter air tambak dalam 10 pengukuran terakhir</p>
@@ -193,7 +195,8 @@ const WaterChart = ({ data = [] }) => {
         </div>
       </div>
 
-      <div className="relative h-80 w-full">
+      {/* <--- DITAMBAHKAN flex-1 agar area grafik meregang mengisi ruang kosong */}
+      <div className="relative flex-1 w-full min-h-[300px]">
         {sortedData.length > 0 ? (
           <Line data={chartData} options={options} />
         ) : (
@@ -204,7 +207,7 @@ const WaterChart = ({ data = [] }) => {
       </div>
 
       {/* Informasi Batas Normal Parameter Aktif */}
-      <div className="mt-4 p-4 rounded-xl bg-slate-950/40 border border-slate-900 text-xs text-slate-400 flex flex-wrap gap-x-8 gap-y-2 justify-between">
+      <div className="mt-4 p-4 rounded-xl bg-slate-950/40 border border-slate-900 text-xs text-slate-400 flex flex-wrap gap-x-8 gap-y-2 justify-between shrink-0">
         <div>
           <span className="font-semibold text-slate-300">Batas Normal {currentParam.label}:</span>{' '}
           {currentParam.minNormal !== null && currentParam.maxNormal !== null && (
